@@ -13,14 +13,15 @@ int log2n_iterativa(int n){
 int log2n_recursiva(int n, int contagem){
     if (n >= 2){
         contagem ++;
-        log2n_recursiva(n/2, contagem);
+        contagem = log2n_recursiva(n/2, contagem);
+        return contagem;
     }
     else
         return contagem;
 }
 
 int main(){
-    int numero = 127;
+    int numero = 256;
     int resultado = log2n_iterativa(numero);
     printf("O resultado da funcao iterativa eh %d \n", resultado);
     int contagem = 0;
