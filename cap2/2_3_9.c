@@ -11,19 +11,18 @@ int Euclides(int m, int n){
 }
 
 int euclides_recursivo(int m, int n){
-    int r;
+    int r = m % n;
+    m = n; n = r;
     if (r != 0){
-        r = m % n;
         m = euclides_recursivo(n, r);
         return m;
     }
     else 
         return m;
-
 }
 
 int main(){
-    int mdc = Euclides(60, 15);
+    int mdc = Euclides(15, 60);
     int mdc2 = euclides_recursivo(60,15);
-    printf("O M.D.C calculado pela funcao eh: %d \n O M.D.C. calculado pela funcao recursiva eh %d", mdc, mdc2);
+    printf("O M.D.C calculado pela funcao eh: %d \nO M.D.C. calculado pela funcao recursiva eh %d", mdc, mdc2);
 }
