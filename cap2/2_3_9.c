@@ -15,10 +15,8 @@ int euclides_recursivo(int m, int n){
     m = n; n = r;
     if (r != 0){
         m = euclides_recursivo(m, n);
-        return m;
     }
-    else 
-        return m;
+    return m;
 }
 
 int main(){
