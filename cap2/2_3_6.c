@@ -37,8 +37,8 @@ int main(){
     double endTime2 = (double)clock()/CLOCKS_PER_SEC;
     double time_taken2 = endTime2 - startTime2; // calculate the elapsed time
     
-    printf("O resultado da funcao recursiva eh: %d \nO resultado da funcao iterativa eh: %f\n", fibonacci_recur, time_taken1);
-    printf("O resultado da funcao iterativa eh: %d \nO resultado da funcao iterativa eh: %f\n", fibonacci_iter, time_taken2);
+    printf("O resultado da funcao recursiva eh: %d \nO tempo de execucao da funcao iterativa foi: %f s\n", fibonacci_recur, time_taken1);
+    printf("O resultado da funcao iterativa eh: %d \nO tempo de execucao da funcao iterativa foi: %f s\n", fibonacci_iter, time_taken2);
 }
 
 // o livro pergunta qual é mais eficiente
