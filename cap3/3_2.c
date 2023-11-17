@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <assert.h>
 
 // 3.2.1 Critique a seguinte função. Ela promete decidir se x está em v[0..n-1],
 // devolvendo 1 em caso afirmativo e 0 em caso negativo.
@@ -37,9 +40,33 @@ int BuscaR(int x, int v[], int n) {
     return BuscaR(x,v,n-1);
 }
 
+// funcao auxiliar para checar se a busca
+// recursiva esta funcionando corretamente
+int Busca(int x, int v[], int n) {
+    for (int i = n - 1; i >= 0; i--) {
+        if (v[i] == x) return i;
+    }
+    return -1;
+}
+
+void teste(int n){
+    srand(time(NULL));
+    int v[n];
+    for (int i=0;i<n;i++){
+        v[i] = rand() % 100;
+    }
+    int aleatorio = rand() % 100;
+    int resultado = BuscaR(aleatorio, v, n);
+    int resultado_busca_binaria = Busca(aleatorio, v, n);
+    if (resultado != resultado_busca_binaria) {
+        printf("\nErro: BuscaR(%d, v, %d) = %d, Busca(%d, v, %d) = %d\n", aleatorio, n, resultado, aleatorio, n, resultado_busca_binaria);
+    }
+    else {
+        printf("OK");
+    }
+}
+
 
 int main() {
-    int v[5] = {1,2,3,4,5};
-    int achou = busc(7, v, 5);
-    printf("%d", achou);
+    teste(200);
 }
