@@ -66,10 +66,13 @@ int removeZeros(int v[], int n){
 
 int removeZerosR(int v[], int n){
     int m;
-    if (n==0) return 0; // ok
+    if (n==0) return 0;
     m = removeZerosR(v, n-1);
+    // mantem o índice
     if (v[n-1] == 0) return m;
+    // passa o valor para o índice
     v[m] = v[n-1];
+    // passa para o próximo índice
     return m+1;
 }
 
@@ -77,12 +80,51 @@ int removeZerosR(int v[], int n){
 int removeZeros2(int v[], int n){
     int i, j;
     for (i = n-1; i >= 0; i--){
-        if (v[i] == 0){
-            for (j=i;j<n-1;j++) v[j] = v[j+1];
+        // ineficiente
+        // está realocando o vetor todo, toda vez que encontra zeros
+        if (v[i] == 0){ 
+            for (j=i;j<n-1;j++) v[j] = v[j+1]; 
             --n;
         }
     }
     return n;
+}
+
+// 3.5.2 Critique a seguinte versão da função removeZeros
+// funcao nao funciona se tiver dois zeros seguidos
+int removeZeros3(int v[], int n){
+    int i, j;
+    for (i=0; i < n; i++)
+        if (v[i] == 0) {
+            for (j = i; j+1 < n; j++) v[j] = v[j+1];
+            n -= 1;
+        }
+    return n;
+}
+
+// 3.5.3 Critique a seguinte versão da função removeZeros.
+// Há alguma maneira simples de corrigir o código?
+int removeZeros4(int v[], int n){
+    int i,z = 0;
+    for (i=0; i < n; i++){
+        if (v[i] == 0) z += 1; 
+        v[i-z] = v[i]; // tem comportamento indefinido
+        // quando i = 0 e z = 1
+        // criando problema de vazamento de memória
+    }
+    return n - z;
+}
+
+// para corrigir podemos acrescentar
+// a instrucao else
+int removeZeros5(int v[], int n){
+    int i,z = 0;
+    for (i=0; i < n; i++){
+        if (v[i] == 0) z += 1; 
+        else v[i-z] = v[i];
+        
+    }
+    return n - z;
 }
 
 int main(){
@@ -92,6 +134,8 @@ int main(){
     bubbleSort(v, n);
     n = remover(3, v, n);
     print_vetor(v, n);
-    n = removeZeros2(v, n);
+    // n = removeZeros2(v, n); // funciona
+    // n = removeZeros3(v, n); // nao funciona
+    n = removeZeros5(v, n);
     print_vetor(v, n);
 }
