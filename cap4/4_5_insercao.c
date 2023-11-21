@@ -23,7 +23,9 @@ void insere (int y, celula *p) {
 }
 
 // 4.5.1 Por que a seguinte versão de Insere não funciona?
-// R: pelo teste aqui funciona corretamente...
+// por que aloca a memoria na stack e não na heap
+// então quando a função sai de escopo
+// p -> seg é indefinido
 void insere2(int y, celula *p){
     celula nova;
     nova.conteudo = y;
@@ -37,7 +39,7 @@ celula *find_previous(celula *p, celula *primaria){
     celula *anterior = malloc(sizeof(celula));
     anterior -> conteudo = primaria -> conteudo;
     anterior -> seg = primaria -> seg;
-    while (anterior -> seg != NULL && anterior -> seg != &*p)
+    while (anterior -> seg != NULL && anterior -> seg != p)
         anterior = anterior -> seg;
     return anterior;
 }
@@ -47,7 +49,7 @@ void insert_between(int y, celula *p, celula *primaria){
     celula *atual = malloc(sizeof(celula));
     atual -> conteudo = y;
     anterior -> seg = atual;
-    atual -> seg = p -> seg;
+    atual -> seg = p;
 }
 
 int main() {
@@ -57,17 +59,14 @@ int main() {
     p -> seg = p2;
     p2 -> conteudo = 5;
     p2 -> seg = NULL;
-    insere2(20, p);
-    assert (p-> conteudo == 10);
+    insere(20, p);
+    assert (p -> conteudo == 10);
     assert (p -> seg -> conteudo == 20);
     assert (p -> seg -> seg -> conteudo == 5);
-    for (celula *loop = p; loop != NULL; loop = loop->seg) {
-        printf("%d ", loop->conteudo);
-    }
 
     // wip
-    // insert_between(50, p->seg->seg, p);
-    // for (celula *loop = p; loop != NULL; loop = loop->seg) {
-    //     printf("%d ", loop->conteudo);
-    // }
+    insert_between(50, p->seg->seg, p);
+    assert (p -> seg -> seg -> conteudo == 50);
+    assert (p -> seg -> seg -> seg -> conteudo == 5);
+    printf("Ok");
 }
