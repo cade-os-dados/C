@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <assert.h>
+#include<time.h>
 
 struct cel {
     int conteudo;
@@ -159,6 +160,50 @@ void removeByIndex(celula *primaria, int indice){
 // que insira uma nova célula com conteúdo x
 // entre a k-ésima e a (k+1)-ésima células
 // de uma lista encadeada
+void insertByPosition(celula *primaria, int k, int valor){
+    celula *intermediaria = malloc(sizeof(celula));
+    intermediaria -> conteudo = valor;
+    
+    // index by 0
+    celula *temp = primaria;
+    for (int i=0; i<k; i++){
+        temp = temp -> seg;
+    }
+
+    // insert between
+    intermediaria -> seg = temp -> seg;
+    temp -> seg = intermediaria;
+}
+
+// 4.7.10 LIBERAÇÃO Escreva uma função que aplique a função free a todas 
+// as células de uma lista encadeada. Estamos supondo, é claro, que cada 
+// célula da lista foi originalmente alocado por malloc
+void destroyCelula(celula *primaria){
+    celula *temp = primaria, *next;
+    while (temp != NULL){
+        next = temp -> seg;
+        free(temp);
+        temp = next;
+    }
+}
+
+// 4.7.11 INVERSÃO Escreva uma função que inverta a ordem das células de uma 
+// lista encadeada (a primeira passa a ser a última, a segunda
+// passa a ser a penúltima, etc.). Faça isso sem criar novas células;
+// apenas altere os ponteiros
+celula *inversao(celula *primaria){
+    // tomar a celula seguinte e
+    // apontar para a celula atual
+    celula *anterior, *next;
+    while (primaria -> seg != NULL) {
+        anterior = primaria;
+        primaria = primaria -> seg; 
+        next = primaria -> seg;
+        primaria -> seg = anterior;
+        primaria = next;
+    }
+    return primaria;
+}
 
 int main(){
     // vec to celula
@@ -207,6 +252,31 @@ int main(){
     len = contagem(celula1);
     assert(len == 8);
 
+    // contagem e inserção
+    celula *celula4 = from_vetor(v1, 5);
+    insertByPosition(celula4, 3, 12);
+    int vetor_teste[6] = {1,2,3,4,12,5};
+    assert_vector_equal_celula(vetor_teste, celula4);
+
+    // liberação
+    int n = 100000;
+    int *vetor_aleatorio = calloc(n, sizeof(*vetor_aleatorio));
+    for (int i=0; i<n; i++){
+        vetor_aleatorio[i] = i;
+    }
+    system ("pause"); // checar memoria
+    celula *celula5 = from_vetor(vetor_aleatorio, n);
+    system ("pause"); // checar memoria
+    destroyCelula(celula5);
+    system ("pause"); // checar memoria
+
+    // inversao
+    celula *celula6 = from_vetor(v1, 5);
+    celula6 = inversao(celula6);
+    int assert_inversao[5] = {5, 4, 3, 2, 1};
+    assert_vector_equal_celula(assert_inversao, celula6);
+
     // passou nos testes
     printf("OK");
+    
 }
