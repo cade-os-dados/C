@@ -21,11 +21,29 @@ void slice(const char* str, char* result, size_t start, size_t end)
     strncpy(result, str + start, end - start);
 }
 
-char *collect_substring(char *string, int init, int index){
-    int token_length = index-1-init;
-    char *token = malloc(sizeof(token_length));
-    slice(string, token, init, index);
-    return token;
+// https://medium.com/@kkhicher1/how-to-slice-string-in-c-language-7a5fd3a5db46
+int stringLength(const char str[])
+{
+    int count = 0;
+    while (str[count] != '\0')
+    {
+        ++count;
+    }
+    return count;
+}
+
+char *sliceString(char *str, int start, int end)
+{
+    int i;
+    int size = end - start + 1;
+    char *output = (char *)malloc(size * sizeof(char));
+
+    for (i = 0; start <= end; start++, i++)
+    {
+        *(output+i) = str[start];
+    }
+    *(output+i) = '\0';
+    return output;
 }
 
 celula *new(char *token){
@@ -36,13 +54,19 @@ celula *new(char *token){
 
 celula *tokenize(char *string){
     int init = 0;
-    int tamanho = sizeof(string);
+    int final = 0;
+    int tamanho = stringLength(string);
     celula *primaria = malloc(sizeof(celula)); // com cabeça
     celula *atual = primaria;
     primaria -> seg = atual;
     for (int index=0; index<tamanho; index++){
-        if (string[index] == ' '){
-            char *token = collect_substring(string, init, index);
+        if (string[index] == ' ' | index == tamanho-1){
+            // depois arrumar isto aqui
+            if (index != tamanho - 1)
+                final = index - 1;
+            else
+                final = index;
+            char *token = sliceString(string, init, final);
             celula *nova = new(token);
             atual -> seg = nova;
             atual = nova;
@@ -54,9 +78,10 @@ celula *tokenize(char *string){
 }
 
 void print_celula(celula *primaria){
-    celula *temp = primaria;
+    celula *temp = primaria -> seg; // lista com cabeça
     while (temp != NULL) {
-        printf("%s", temp -> conteudo);
+        printf("%s\n", temp -> conteudo);
+        temp = temp -> seg;
     }
 }
 
@@ -64,7 +89,9 @@ int main() {
     // string in heap
     char *greetings = strdup("Hello World!");
     greetings[0] = 'J';
-    printf("%s", greetings);
+    printf("%s\n", greetings);
+
+    // tokenizer
     celula *primaria = tokenize(greetings);
     print_celula(primaria);
 }
