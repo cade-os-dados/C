@@ -121,11 +121,6 @@ typedef struct celula_duplamente_encadeada {
     struct celula_duplamente_encadeada *previous;
 } dupla;
 
-// primeira <- -> ultima
-// caso 0 primeira = ultima
-// primeira -> previous = NULL
-// add := ultima = ultima + 1
-
 // cria uma fila
 dupla *init(int y){
     dupla *primeira = malloc(sizeof(dupla));
