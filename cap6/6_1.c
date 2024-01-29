@@ -76,6 +76,60 @@ celula *inverter(char *mensagem){
 // "desempilhar", produz a impressão da sequência 2, 3, 1, 4. Quais das 24
 // permutações de 1, 2, 3, 4 podem ser obtidas dessa maneira?
 
+int desempilhar(int p[], int t, int ordem[], int resultado[]){
+    int j = 1; int r = 0;
+    for (int i = 0; i < 8; i++){
+        if (ordem[i] == 1){
+            t = insere(p, j, t, 4);
+            j++;
+        } else {
+            resultado[r] = pop(p, &t);
+            r++;
+        }
+    }
+}
+
+// warning: unused
+// funcao veloz para permutar o vetor binário de tamanho 2
+int permutar_2x2(int vetor[]){
+    for (int j = 0; j < 2; j++){
+        for (int i = 0; i < 2; i++){
+            vetor[i] = vetor[i] ^ 1;
+            print_vetor(vetor, 2);
+        }
+    }
+    return vetor[0];
+}
+
+void next(int array22[], int left, int right){
+    int soma = array22[left] + array22[right];
+    switch (soma){
+        case 1:
+            if (array22[1] == 1) array22[left] = 1; 
+            else { array22[left] = 0; array22[right] = 1;}
+            break;
+        case 2:
+            array22[left] = 0; array22[right] = 0;
+            break;
+        case 0:
+            array22[left] = 1; //array22[0] = 0;
+            break;
+    }
+}
+
+void test_next(){
+    int array1[2] = {0, 0};
+    int array2[2] = {1, 0};
+    int array3[2] = {0, 1};
+    int array4[2] = {1, 1};
+
+    next(array1, 0, 1); next(array2, 0 , 1); next(array3, 0, 1); next(array4, 0, 1);
+    assert(array1[0] == 1); assert(array1[1] == 0);
+    assert(array2[0] == 0); assert(array2[1] == 1);
+    assert(array3[0] == 1); assert(array3[1] == 1);
+    assert(array4[0] == 0); assert(array4[1] == 0);
+}
+
 // podemos criar um código força bruta...
 int permutacoes() {
     int total = 0;
@@ -84,14 +138,14 @@ int permutacoes() {
     // se não foi gerada, então soma 1 no valor total
     
     // wip algoritmo de permutacao
-    int v[3] = {0,0,0};
+    int v[4] = {0,0,0,0};
     int possibilidades = pow(2, 8);
-    int j = 0;
-    print_vetor(v, 3);
-    while (j < 2) {
-        for (int i = j; i < 3; i++){
+    int j = 1;
+    print_vetor(v, 4);
+    while (j < 3) {
+        for (int i = j; i < 4; i++){
             v[i] = v[i] ^ 1; // bit flip
-            print_vetor(v, 3);
+            print_vetor(v, 4);
         }
         printf("OK\n");
         j++;
@@ -118,5 +172,11 @@ int main(){
     celula *mensagem_invertida = inverter(m);
     print_celula(mensagem_invertida);
 
-    int resultado = permutacoes();
+    test_next();
+
+    int temp[4];
+    int result[4]; 
+    int ordem[8] = {1, 1, 0, 1, 0, 0, 1, 0};
+    desempilhar(temp, 0, ordem, result);
+    print_vetor(result, 4);
 }
