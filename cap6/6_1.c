@@ -76,15 +76,17 @@ celula *inverter(char *mensagem){
 // "desempilhar", produz a impressão da sequência 2, 3, 1, 4. Quais das 24
 // permutações de 1, 2, 3, 4 podem ser obtidas dessa maneira?
 
-int desempilhar(int p[], int t, int ordem[], int resultado[]){
-    int j = 1; int r = 0;
+int desempilhar(int ordem[], int *resultado){
+    int j = 1; int r = 0; int p[4]; int t = 0;
     for (int i = 0; i < 8; i++){
-        if (ordem[i] == 1){
+        if (ordem[i] == 1 & t < 5 & j < 5){
             t = insere(p, j, t, 4);
             j++;
         } else {
-            resultado[r] = pop(p, &t);
-            r++;
+            if (t != 0) {
+                resultado[r] = pop(p, &t);
+                r++;
+            }
         }
     }
 }
@@ -144,6 +146,119 @@ void print_permutacoes(int v[], int len, int k) {
     }
 }
 
+// ultima parte: inserir as sequencias em um
+// vetor na heap e adicionar um comando para checar se a sequencia
+// ja foi inserida
+
+typedef struct sequencia {
+    int *ponteiro;
+    struct sequencia *next;
+} sequencia;
+
+// se a sequencia já existe retorna 0
+int verifica_sequencia(int *p, sequencia *primaria, int t, int len){
+    sequencia *loop = primaria -> next; // lista com cabeça
+    for(int i = 0; i < t; i++){
+        int soma = 0;
+        // compara todos os valores dos vetores
+        for(int j = 0; j < len; j++){
+            int valor = loop -> ponteiro[j];
+            soma += (valor == p[j]);
+        }
+        if (soma == len)
+            return 0;
+        loop = loop -> next;
+    }
+    return 1;
+}
+
+// se ja existir algum vetor na lista ligada, cujos valores
+// sejam iguais a p retorna 0, caso contrario insere p na lista e retorna 1
+int inserir_sequencia(int *p, sequencia *primaria, int *t, int len){
+    int prosseguir = verifica_sequencia(p, primaria, *t, len);
+    if (prosseguir){
+        sequencia *loop = primaria;
+        for (int i = 0; i < *t; i++)
+            loop = loop -> next;
+        sequencia *nova = malloc(sizeof(sequencia));
+        loop -> next = nova;
+        nova -> ponteiro = p;
+        nova -> next = NULL;
+        *t = *t + 1;
+        return 1;
+    }
+    return 0;
+}
+
+void print_sequencia(sequencia *primaria, int t, int len){
+    printf("(");
+    sequencia *loop = primaria -> next; // pular celula cabeça
+    for (int i = 0; i < t; i++){
+        if (i == 0) printf(" ");
+        else printf("  ");
+        for (int j = 0; j < len; j++){
+            printf("%d ", loop -> ponteiro[j]);
+        }
+        if (i != t - 1)
+        printf("\n");
+        loop = loop -> next;
+    }
+    printf(")\n");
+}
+
+int test_sequencia(){
+    sequencia *validacao = malloc(sizeof(sequencia));
+    validacao -> ponteiro = NULL;
+    validacao -> next = NULL;
+    int t = 0;
+    int vetor1[4] = {1, 2, 3, 4}; int vetor2[4] = {2, 2, 3, 4};
+    int vetor3[4] = {3,4,2,1}; int vetor4[4] = {1, 2, 3, 4};
+
+    inserir_sequencia(vetor1, validacao, &t, 4);
+    inserir_sequencia(vetor2, validacao, &t, 4);
+    inserir_sequencia(vetor3, validacao, &t, 4);
+    inserir_sequencia(vetor4, validacao, &t, 4);
+
+    assert(t == 3);
+}
+
+void teste_desempilhar(){
+    int result[4]; 
+    int ordem[8] = {1, 1, 0, 1, 0, 0, 1, 0};
+    desempilhar(ordem, result);
+    assert(result[0] == 2); assert(result[1] == 3);
+    assert(result[2] == 1); assert(result[3] == 4);
+}
+
+int valida_sequencia(int sequencia[]){
+    int valida = 0;
+    for (int i = 0; i < 4; i++){
+        if (sequencia[i] < 5 & sequencia[i] > 0)
+            valida++;
+    }
+    if (valida == 4)
+        return 1;
+    return 0;
+}
+
+// nao esta funcionando provavelmente por conta dos vetores serem na stack
+// neste caso terei que alocar na heap para que os vetores se perpetuem
+void criar_permutacoes(sequencia *primaria, int ordem[], int len, int k, int *t) {
+    if (k > len - 1 - 2) {
+        for (int i = 0; i < 4; i++){
+            next(ordem, len - 2, len - 1);
+            int *sequencia = malloc(4 * sizeof(int));
+            desempilhar(ordem, sequencia);
+            if (valida_sequencia(sequencia))
+                inserir_sequencia(sequencia, primaria, t, 4);
+        }
+    } else {
+        criar_permutacoes(primaria, ordem, len, k+1, t);
+        ordem[k] = ordem[k] ^ 1;
+        criar_permutacoes(primaria, ordem, len, k+1, t);
+    }
+}
+
 int main(){
     int n = 12; int p[n]; int t = 0;
     pop(p, &t);
@@ -165,13 +280,12 @@ int main(){
 
     test_next();
     test2_next();
-
-    int temp[4];
-    int result[4]; 
-    int ordem[8] = {1, 1, 0, 1, 0, 0, 1, 0};
-    desempilhar(temp, 0, ordem, result);
-    print_vetor(result, 4);
-
-    int my_vector[4] = {0, 0, 0, 0};
-    print_permutacoes(my_vector, 4, 0);
+    test_sequencia();
+    teste_desempilhar();
+    
+    // inicializa o vetor de permutações
+    int iterar[8] = {0, 0, 0, 0, 0, 0, 0, 0}; int t_ = 0;
+    sequencia *permutacoes = malloc(sizeof(sequencia));
+    criar_permutacoes(permutacoes, iterar, 8, 0, &t_);
+    print_sequencia(permutacoes, t, 4);
 }
