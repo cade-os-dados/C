@@ -113,8 +113,59 @@ char *InfixaParaPosFixa3(char infix[]){
             default: posfix[j++] = infix[i]; }
     }
     // caso a expressao finalize com operadores
-    while (i != j){
+    while (i != j & t > 0){
         posfix[j++] = p[--t];
+    }
+    free (p);
+    posfix[j] = '\0';
+    return posfix;
+}
+
+// 6.3.5 Reescreva a função InfixaParaPosfixa supondo que a expressão infixa
+// pode estar incorreta
+
+// OBS: uma alternativa seria assertar se é bem formada utilizando uma função específica
+
+char *InfixaParaPosFixa4(char infix[]){
+    char *posfix, x, *p;
+    int t, n, i, j;
+    n = strlen(infix);
+    posfix = malloc(n * sizeof(char));
+    p = malloc(n * sizeof(char));
+    t = 0;
+    for (j=0, i=0; infix[i] != '\0'; i++){
+        /* p[0..t-1] é uma pilha de caracteres */
+        switch (infix[i]){
+            case '(': p[t++] = infix[i]; break;
+            case ')': while ( (x = p[--t]) != '(' && t >= 0 ) posfix[j++] = x;
+                if (x != ')' && x != '(' ) {
+                    printf("\nWrong synxtax! Your sequence isnt well-formed...");
+                    free (p);
+                    posfix[0] = '\0';
+                    return posfix;
+                }
+                    break;
+            case '+':
+            case '-': while (t > 0 && (x = p[t-1]) != '(')
+            {   --t; posfix[j++] = x;   }
+                p[t++] = infix[i]; /* empilha */
+                break;
+            case '*':
+            case '/': while (t > 0 && (x = p[t-1]) != '+' && x != '-' && x != '(') 
+            {   --t; posfix[j++] = x;   }
+                p[t++] = infix[i];
+                break;
+            default: posfix[j++] = infix[i]; }
+    }
+    // caso a expressao finalize com operadores
+    while (i != j & t > 0){
+        posfix[j++] = p[--t];
+        if (p[t] == '(') {
+            printf("\nWrong synxtax! Your sequence isnt well-formed...");
+            free (p);
+            posfix[0] = '\0';
+            return posfix;
+        }
     }
     free (p);
     posfix[j] = '\0';
@@ -135,4 +186,20 @@ int main(){
     char expressao3[16] = "A+B*C+D*E*F-G/H";
     char *posfixa3 = InfixaParaPosFixa3(expressao3);
     printf("\n%s", posfixa3);
+
+    char expressao4[17] = "A+B*(C+D)*E*F-G/H";
+    char *posfixa4 = InfixaParaPosFixa3(expressao4);
+    printf("\n%s", posfixa4);
+
+    char expressao_errada[16] = "A+B*C+D*)E*F-G/H";
+    char *posfixa5 = InfixaParaPosFixa4(expressao_errada);
+    if (posfixa5[0] != '\0') printf("\n%s", posfixa5);
+
+    char expressao_errada2[16] = "A+B*C+D*(E*F-G/H";
+    char *posfixa6 = InfixaParaPosFixa4(expressao_errada2);
+    if (posfixa6[0] != '\0') printf("\n%s", posfixa6);
+
+    char expressao_errada3[17] = "A+B*C+D*((E*F-G/H";
+    char *posfixa7 = InfixaParaPosFixa4(expressao_errada3);
+    if (posfixa7[0] != '\0') printf("\n%s", posfixa7);
 }
