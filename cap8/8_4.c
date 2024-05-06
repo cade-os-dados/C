@@ -100,6 +100,51 @@ void selecaoLinkedList (celula *strings)
     }
 }
 
+/* 8.4.3 ORDENAÇÃO DE STRUCTS. Suponha que cada elemento de um vetor
+* é um registro que consiste em um inteiro e uma string:
+*   struct elem {int i; char *s;};
+* Escreva uma função que rearranje o vetor de modo que os campos
+* i fiquem em ordem crescente. Escreva outra função que rearranje
+* o vetor de modo que os campos s fiquem em ordem lexicográfica 
+* (veja Seção G.3). */
+
+typedef struct elem {int i; char *s;} elemento;
+
+void insercaoElemento (int n, elemento *elem[])
+{
+    int k, j;
+    for (k = 1; k < n; k++){
+        elemento *x = elem[k]; 
+        for (j = k-1; j >= 0 && elem[j] -> i > x -> i; j--){
+            elem[j+1] = elem[j];
+        }
+        elem[j+1] = x;
+    }
+}
+
+void insercaoElementoLexicografico (int n, elemento *elem[])
+{
+    int k, j;
+    for (k = 1; k < n; k++){
+        elemento *x = elem[k]; 
+        for (j = k-1; j >= 0 && strcmp(elem[j] -> s, x -> s) > 0; j--){
+            elem[j+1] = elem[j];
+        }
+        elem[j+1] = x;
+    }
+}
+
+elemento *newElem (int i, char *s){
+    elemento *new = malloc(sizeof(elemento));
+    new -> i = i;
+
+    int len = strlen(s) + 1;
+    new->s = malloc(len * sizeof(char));
+    strncpy(new->s, s, len);
+    new -> s[len] = '\0';
+    return new;
+}
+
 int main(void){
     char *texts[3] = { 
         stringpointer("banana"), 
@@ -134,6 +179,24 @@ int main(void){
     };
     celula *expected2 = from_array(temp, 3);
     assert_eq_celula(txt, expected2);
+
+    elemento *elem[3] = {
+        newElem(2, "a"),
+        newElem(0, "b"),
+        newElem(1, "c")
+    };
+
+    insercaoElemento(3, elem);
+
+    assert(elem[0] -> i == 0 && strcmp(elem[0] -> s, "b") == 0);
+    assert(elem[1] -> i == 1 && strcmp(elem[1] -> s, "c") == 0);
+    assert(elem[2] -> i == 2 && strcmp(elem[2] -> s, "a") == 0);
+
+    insercaoElementoLexicografico(3, elem);
+
+    assert(elem[0] -> i == 2 && strcmp(elem[0] -> s, "a") == 0);
+    assert(elem[1] -> i == 0 && strcmp(elem[1] -> s, "b") == 0);
+    assert(elem[2] -> i == 1 && strcmp(elem[2] -> s, "c") == 0);
 
     printf("OK");
 }
