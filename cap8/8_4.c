@@ -145,6 +145,27 @@ elemento *newElem (int i, char *s){
     return new;
 }
 
+/* 8.4.4 ORDENAÇÃO DE LISTA ENCADEADA. Escreva uma função que ordene uma lista
+* encadeada. Inspire-se no algoritmo de ordenação por inserção. Faça duas versões:
+* uma para lista com cabeça e outra para lista sem cabeça (Sua função precisa devolver 
+* alguma coisa?). Repita o exercício com base no algoritmo de ordenação por seleção. */
+
+
+void insercaoLinkedList (celula *strings)
+{
+    int j;
+    int tamanho = lenList(strings) + 1;
+    
+    for (int i = 1; i < tamanho; i++)
+    {
+        char *x = busca(i, strings) -> conteudo;
+        for (j = i-1; j >= 0 && strcmp(busca(j, strings) -> conteudo, x) > 0; j--){
+            busca(j+1, strings) -> conteudo = busca(j, strings) -> conteudo;
+        }
+        busca(j+1, strings) -> conteudo = x;
+    }
+}
+
 int main(void){
     char *texts[3] = { 
         stringpointer("banana"), 
@@ -197,6 +218,27 @@ int main(void){
     assert(elem[0] -> i == 2 && strcmp(elem[0] -> s, "a") == 0);
     assert(elem[1] -> i == 0 && strcmp(elem[1] -> s, "b") == 0);
     assert(elem[2] -> i == 1 && strcmp(elem[2] -> s, "c") == 0);
+
+
+    // 8.4.4
+    char *init[3] = {
+        stringpointer("ordenar"),
+        stringpointer("string"),
+        stringpointer("lexicograficamente")
+    };
+
+    celula *sample = from_array(init, 3);
+
+    char *temp2[3] = {
+        stringpointer("lexicograficamente"),
+        stringpointer("ordenar"),
+        stringpointer("string")
+    };
+
+    celula *expected3 = from_array(temp2, 3);
+
+    insercaoLinkedList(sample);
+    assert_eq_celula(sample, expected3);
 
     printf("OK");
 }

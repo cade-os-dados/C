@@ -62,3 +62,13 @@ void assert_eq_celula(celula *cel1, celula *cel2){
         loop2 = loop2 -> seg;
     }
 }
+
+int lenList(celula *lista){
+    int i = 0;
+    celula *loop = lista;
+    while (loop -> seg != NULL){
+        loop = loop -> seg;
+        i++;
+    }
+    return i;
+}
