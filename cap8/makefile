@@ -14,6 +14,8 @@ OPTIONS = -Wall -Wpedantic -Wno-unused-result -O0 -g
 # LIBRARIES = -lm
 # necessario no caso de usar math.h
 
+OPTIMIZED = -Wall -Wpedantic -Wno-unused-result -Ofast -g
+
 
 # para produzir o arquivo executavel xxx, 
 # basta dizer "make xxx"
@@ -29,7 +31,7 @@ all: 8_1 8_2 8_3 8_4
 	gcc $(STD) $(OPTIONS) 8_3.c include/vec.c include/busca.c -o build/8_3.exe
 
 8_4 : 8_4.c
-	gcc $(STD) $(OPTIONS) 8_4.c include/mystring.c include/lista.c -o build/8_4.exe 
+	gcc $(STD) $(OPTIMIZED) 8_4.c include/mystring.c include/lista.c -o build/8_4.exe 
 
 # o que parecem ser espacos no comeco da linha anterior
 # sao, na verdade, um unico caractere de tabulacao (\t) 
