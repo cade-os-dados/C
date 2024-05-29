@@ -1,0 +1,1 @@
+A partir daqui vamos passar a escolher alguns exercícios para resolver, não todos pois fica muito massante, mas sim alguns básicos para pegar o conceito e pular para os mais desafiadores, evitando os repetitivos.
