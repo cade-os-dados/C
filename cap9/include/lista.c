@@ -4,6 +4,13 @@
 # include <string.h>
 # include <assert.h>
 
+celula *new(int valor){
+    celula *cel1 =  malloc(sizeof(celula));
+    cel1 -> conteudo = valor;
+    cel1 -> seg = NULL;
+    return cel1;
+}
+
 celula *next (celula *atual){
     atual -> seg = malloc(sizeof(celula));
     return atual -> seg;

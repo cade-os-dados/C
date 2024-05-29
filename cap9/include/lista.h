@@ -7,6 +7,7 @@ struct cel {
 
 typedef struct cel celula;
 
+celula *new(int);
 celula *next(celula *);
 void print_celula(celula *);
 celula *from_array(int *, int);
