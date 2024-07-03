@@ -1,22 +1,6 @@
 # include "vec.h"
+# include "separa.h"
 # include <stdio.h>
-
-/* Recebe um vetor v[p..r] com p <= r. Rearranja os
-* elementos do vetor e devolve j em p..r tal que
-* v[p..j-1] <= v[j] < v[j+1..r] */
-int separa(int p, int r, int v[])
-{
-    int c, j, k, t;
-    c = v[r]; j = p;
-    for (k = p; k < r; k++)
-        if (v[k] <= c)
-        {
-            t = v[j], v[j] = v[k], v[k] = t;
-            j++;
-        }
-    v[r] = v[j], v[j] = c;
-    return j;
-}
 
 /* Esta função rearranja o vetor v[p..r] com p <= r+1,
 * de modo que ele fique em ordem crescente */
@@ -24,7 +8,7 @@ void quicksort (int p, int r, int v[])
 {
     int j;
     if (p < r) {
-        j = separa(p, r, v);
+        j = separacao(p, r, v);
         quicksort(p, j-1, v);
         quicksort(j+1, r, v); 
     }
@@ -36,7 +20,7 @@ void tailquicksort(int p, int r, int v[])
 {
     while (p < r)
     {
-        int j = separa(p, r, v);
+        int j = separacao(p, r, v);
         tailquicksort(p, j-1, v);
         p = j+1;
     }  
@@ -49,14 +33,14 @@ void iterquicksort(int v[], int n)
     int p = 0; int r = n;
     while (p < r)
     {
-        int j = separa(p,r,v);
+        int j = separacao(p,r,v);
         p = j+1;
     }
 
     p = 0; r = n;
     while (p < r)
     {
-        int j = separa(p,r,v);
+        int j = separacao(p,r,v);
         r = j-1;
     }
 }
