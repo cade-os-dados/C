@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     int vetor2[2] = {1, 2};
     int expected2[3] = {1, 2, 3};
-    int *s2 = malloc(sizeof(int) * 3);
+    int *s2 = malloc(sizeof(int) * 2);
     int new_n2 = next(vetor2, s2, 2, 3);
 
     assert_vec(expected, s, 0, new_n);
