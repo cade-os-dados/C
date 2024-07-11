@@ -50,6 +50,15 @@ int *sqt_vec(int N)
     return vetor;
 }
 
+/* retorna um vetor de tamanho N com todos os seus valores iguais a V*/
+int *tile(int N, int V)
+{
+    int *v = malloc(sizeof(int) * N);
+    for (int i = 0; i < N; i++)
+        v[i] = V;
+    return v;
+}
+
 char **strvec(int n, int m, char array[][m])
 {
     char **vector = malloc(sizeof(char *) * n);
@@ -67,3 +76,42 @@ void strlex(int n, char **v)
     for (int i = 1; i < n; i++)
         assert(strcmp(v[i], v[i-1]) > 0);
 }   
+
+darray dnew(int capacity, int buffer_size)
+{
+    darray d;
+    d.valores = malloc(sizeof(int) * capacity);
+    d.capacity = capacity;
+    d.allocated = 0;
+    d.buffer = buffer_size;
+    return d;
+}
+
+void push(darray *d, int value)
+{
+    if (d -> allocated == d -> capacity)
+    {
+        d -> capacity = d -> capacity + d -> buffer;
+        d -> valores = realloc(d -> valores, ( d -> capacity) * sizeof(int));
+    }
+
+    int index = d -> allocated;
+    (d -> valores)[index] = value;
+    d -> allocated = index + 1;
+}
+
+void dclean(darray *d)
+{
+    d->valores = realloc(d->valores, 0);
+    d -> allocated = 0;
+    d -> capacity = 0;
+}
+
+farray *fnew(int *val, int len)
+{
+    farray *n = malloc(sizeof(farray));
+    n -> val = malloc(sizeof(int) * len);
+    copy_vec(val, n -> val, len);
+    n -> len = len;
+    return n;
+}
