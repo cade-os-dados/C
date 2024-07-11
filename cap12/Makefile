@@ -6,17 +6,24 @@ LIB = cap12lib.a
 I = -Iinclude
 COMPILER = gcc
 LIB-BUILDER = ar rv
+OBJ = build/obj
 
-all: vec lista library 12_2 12_3 12_4
+all: vec lista ordenacao busca library 12_2 12_3 12_4
 
 vec:
-	$(COMPILER) -c include/vec.c -o build/vec.o
+	$(COMPILER) -c include/vec.c -o $(OBJ)/vec.o
 
 lista:
-	$(COMPILER) -c include/lista.c -o build/lista.o
+	$(COMPILER) -c include/lista.c -o $(OBJ)/lista.o
+
+ordenacao:
+	$(COMPILER) -c include/ordenacao.c -o $(OBJ)/ordenacao.o
+
+busca:
+	$(COMPILER) -c include/busca.c -o $(OBJ)/busca.o
 
 library: 
-	$(LIB-BUILDER) $(LIB) build/vec.o build/lista.o
+	$(LIB-BUILDER) $(LIB) $(OBJ)/vec.o $(OBJ)/lista.o $(OBJ)/ordenacao.o $(OBJ)/busca.o
 
 12_2:
 	$(COMPILER) $(STD) $(OPTIONS) 12_2.c $(LIB) $(I) -o build/12_2.exe
