@@ -2,6 +2,7 @@
 #include "lista.h"
 #include "ordenacao.h"
 #include "busca.h"
+#include "fatorial.h"
 
 /* Ordem lexicográfica especial: dá preferência a 
 * sequências mais longas... */
@@ -162,88 +163,27 @@ Subset *subset_sum(int *values, int n, int T)
 * 1,2,...,n que têm exatamente k termos. (Isso corresponde aos subconjuntos de
 * {1,2,...,n} que têm exatamente k elementos.) */
 
-/* 
-* 1 2 3 4 (1)
-* 1 2 4 3 (2)
-* 1 3 2 4 (3)
-* 1 3 4 2 (4)
-* 1 4 2 3 (5)
-* 1 4 3 2 (6)
-* 2 1 3 4 (7)
-* 2 1 4 3 (8)
-* 2 3 1 4 (9)
-* 2 3 4 1 (10)
-* 2 4 1 3 (11)
-* 2 4 3 1 (12)
-* 3 1 2 4 (13)
-* 3 1 4 2 (14)
-* 3 2 1 4 (15)
-* 3 2 4 1 (16)
-* 3 4 1 2 (17)
-* 3 4 2 1 (18)
-* 4 1 2 3 (19)
-* 4 1 3 2 (20)
-* 4 2 1 3 (21)
-* 4 2 3 1 (22)
-* 4 3 1 2 (23)
-* 4 3 2 1 (24) 
-* Obs: é n! 
-*/
-
-int fatorial(int n)
+/* utilizar exaustao para verificar se todos os vetores são
+* distintos */
+void combinar(int *v, int n, int k, int *c)
 {
-    int fatorial = n;
-    while (n > 2)
+    if (k == 3)
     {
-        n--;
-        fatorial = fatorial * n;
-    }
-    return fatorial;
-}
-
-void ajustar(int* v, int valor)
-{
-
-}
-
-int combinacoes(int n)
-{
-    int *sqt = sqt_vec(n);
-    for (int i = 0; i < n; i++)
-        sqt[i] = sqt[i]+1;
-
-    int resultado = 0;
-
-    for (int i = 0; i < 3; i++)
-    {
-        swap(sqt, n-2, n-1);
-        resultado++;
-        print_vec(sqt, 0, n);
-
-        swap(sqt, n-3, n-1);
-        resultado++;
-        print_vec(sqt, 0, n);
-    }
-
-    for (int i = 1; i < n; i++)
-    {
-        int loc = binSearch(sqt, 0, n, i+1);
-        swap(sqt, 0, loc);
-        stdsort(sqt, 1, n);
-        for (int i = 0; i < 3; i++)
+        while (k > 0)
         {
-            swap(sqt, n-2, n-1);
-            resultado++;
-            print_vec(sqt, 0, n);
-
-            swap(sqt, n-3, n-1);
-            resultado++;
-            print_vec(sqt, 0, n);
+            swap(v,0,1); (*c)++; print_vec(v,0,n); 
+            swap(v,0,2); (*c)++; print_vec(v,0,n);
+            k--;
         }
     }
-    return resultado;
+    if (k == 4){
+        for (int i = 0; i < 4; i++)
+        {
+            combinar(v, n, k-1, c);
+            swap(v, 0, 3);
+        }
+    }   
 }
-
 
 void endl() {printf("\n");}
 
@@ -266,10 +206,13 @@ int main(void)
         print_vec(loop -> vec-> val, 0, loop -> vec-> len);
         loop = loop -> next;
     }
+    endl();
 
     printf("Combinacoes: \n");
-    int r = combinacoes(4);
-    printf("n comb: %d\n", r);
+    int *sqt = sqt_vec(4, 1);
+    int c = 0;
+    combinar(sqt, 4, 4, &c);
+    printf("n comb: %d\n", c);
 
     printf("fatorial de 4: %d", fatorial(4));
 }

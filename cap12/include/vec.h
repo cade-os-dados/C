@@ -22,9 +22,11 @@ typedef struct FixedArray{
 void print_vec(int *, int, int);
 void swap(int *, int, int);
 void assert_vec(int *, int *, int, int);
+int eq_vec(int *, int *, int);
 void copy_vec(int *, int *, int);
+void copy_vec2(int *, int *, int, int);
 int *rnd_vec(int, int);
-int *sqt_vec(int);
+int *sqt_vec(int, int);
 int *tile(int, int);
 char **strvec(int n, int m, char array[][m]);
 void strlex(int n, char **v);

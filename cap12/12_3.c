@@ -58,7 +58,7 @@ int next(int v[], int *s, int i, int n)
 
 int main(int argc, char** argv)
 {
-    int *vetor = sqt_vec(10);
+    int *vetor = sqt_vec(10, 0);
     for (int i = 0; i < 10; i++) vetor[i] = vetor[i] + 1;
     int expected[9] = {1, 2, 3, 4, 5, 6, 7, 8, 10};
 

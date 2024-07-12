@@ -22,6 +22,16 @@ void assert_vec(int v[], int v2[], int i, int n)
     }
 }
 
+int eq_vec(int *ptr1, int *ptr2, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (ptr1[i] != ptr2[i])
+            return 0;
+    }
+    return 1;
+}
+
 void copy_vec(int v[], int s[], int n)
 {
     n = n-1;
@@ -29,6 +39,17 @@ void copy_vec(int v[], int s[], int n)
     {
         s[n] = v[n];
         n--;
+    }
+}
+
+void copy_vec2(int *sub, int *v, int ini, int n)
+{
+    int i = 0;
+    while (ini < n)
+    {
+        v[ini] = sub[i];
+        i++;
+        ini++;
     }
 }
 
@@ -42,11 +63,11 @@ int *rnd_vec(int N, int max)
 }
 
 /* vetor sequencial de tamanho N*/
-int *sqt_vec(int N)
+int *sqt_vec(int N, int shift)
 {
     int *vetor = malloc(sizeof(int) * N);
     for (int i = 0; i < N; i++)
-        vetor[i] = i;
+        vetor[i] = i + shift;
     return vetor;
 }
 

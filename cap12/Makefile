@@ -8,7 +8,7 @@ COMPILER = gcc
 LIB-BUILDER = ar rv
 OBJ = build/obj
 
-all: vec lista ordenacao busca library 12_2 12_3 12_4
+all: vec lista ordenacao busca fatorial library 12_2 12_3 12_4
 
 vec:
 	$(COMPILER) -c include/vec.c -o $(OBJ)/vec.o
@@ -22,8 +22,11 @@ ordenacao:
 busca:
 	$(COMPILER) -c include/busca.c -o $(OBJ)/busca.o
 
+fatorial:
+	$(COMPILER) -c include/fatorial.c -o $(OBJ)/fatorial.o
+
 library: 
-	$(LIB-BUILDER) $(LIB) $(OBJ)/vec.o $(OBJ)/lista.o $(OBJ)/ordenacao.o $(OBJ)/busca.o
+	$(LIB-BUILDER) $(LIB) $(OBJ)/vec.o $(OBJ)/lista.o $(OBJ)/ordenacao.o $(OBJ)/busca.o $(OBJ)/fatorial.o
 
 12_2:
 	$(COMPILER) $(STD) $(OPTIONS) 12_2.c $(LIB) $(I) -o build/12_2.exe
