@@ -1,38 +1,43 @@
+# PADRÃO DO C
 STD = -std=c99
 
+# COMPILADOR
+COMPILER = gcc
+
+# STATIC LINK LIBRARY
+LIB = build/lib/genericlib.a
+
+# FLAG ARQUIVOS DE INCLUSÃO
+I = -Iinclude
+
+# OUTRAS OPÇÕES DO COMPILADOR
 OPTIONS = -Wall -Wpedantic -Wno-unused-result -O0 -g
 OPTIMIZED = -Wall -Wpedantic -Wno-unused-result -Ofast -g
-LIB = cap12lib.a
-I = -Iinclude
-COMPILER = gcc
-LIB-BUILDER = ar rv
+
+# BUILD DA STATIC LIBRARY
 OBJ = build/obj
+BUILDER = ar rv
 
-all: vec lista ordenacao busca fatorial library 12_2 12_3 12_4
+# ARQUIVOS .c
+FILES = vec lista busca fatorial permutacao exaustao comb
 
-vec:
-	$(COMPILER) -c include/vec.c -o $(OBJ)/vec.o
+# ARQUIVOS FINAIS .EXE
+# (TEM QUE TER O ARQUIVO .C PARA COMPILAR)
+EXES = 12_2 12_3 12_4
 
-lista:
-	$(COMPILER) -c include/lista.c -o $(OBJ)/lista.o
+all: compile library exe
 
-ordenacao:
-	$(COMPILER) -c include/ordenacao.c -o $(OBJ)/ordenacao.o
+compile:
+	for file in $(FILES) ; do \
+		$(COMPILER) -c src/$$file.c $(I) -o $(OBJ)/$$file.o ; \
+	done
 
-busca:
-	$(COMPILER) -c include/busca.c -o $(OBJ)/busca.o
+library:
+	for file in $(FILES); do \
+		$(BUILDER) $(LIB) $(OBJ)/$$file.o ; \
+	done
 
-fatorial:
-	$(COMPILER) -c include/fatorial.c -o $(OBJ)/fatorial.o
-
-library: 
-	$(LIB-BUILDER) $(LIB) $(OBJ)/vec.o $(OBJ)/lista.o $(OBJ)/ordenacao.o $(OBJ)/busca.o $(OBJ)/fatorial.o
-
-12_2:
-	$(COMPILER) $(STD) $(OPTIONS) 12_2.c $(LIB) $(I) -o build/12_2.exe
-
-12_3:
-	$(COMPILER) $(STD) $(OPTIONS) 12_3.c $(LIB) $(I) -o build/12_3.exe
-
-12_4:
-	$(COMPILER) $(STD) $(OPTIONS) 12_4.c $(LIB) $(I) -o build/12_4.exe
+exe:
+	for e in $(EXES) ; do \
+		$(COMPILER) $(STD) $(OPTIONS) $$e.c $(LIB) $(I) -o build/$$e.exe ; \
+	done

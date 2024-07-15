@@ -1,0 +1,1 @@
+mkdir build | mkdir build/obj | mkdir build/lib

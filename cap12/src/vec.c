@@ -128,6 +128,26 @@ void dclean(darray *d)
     d -> capacity = 0;
 }
 
+void print_darray(darray* d)
+{
+    printf("[ ");
+    for (int i = 0; i < d -> allocated; i++)
+    {
+        printf("%d ", (d -> valores)[i]);
+    }
+    printf("]\n");
+}
+
+void print_by_index(int* v, darray* d)
+{
+    printf("[ ");
+    for (int i = 0; i < d -> allocated; i++)
+    {
+        printf("%d ", v[d -> valores[i]]);
+    }
+    printf("]\n"); 
+}
+
 farray *fnew(int *val, int len)
 {
     farray *n = malloc(sizeof(farray));

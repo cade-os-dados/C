@@ -35,5 +35,7 @@ void strlex(int n, char **v);
 darray dnew(int, int);
 void push(darray *, int);
 void dclean(darray *);
+void print_darray(darray* d);
+void print_by_index(int *, darray *);
 farray *fnew(int *, int);
 #endif

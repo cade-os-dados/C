@@ -1,8 +1,10 @@
 #include "vec.h"
 #include "lista.h"
-#include "ordenacao.h"
 #include "busca.h"
 #include "fatorial.h"
+#include "permutacao.h"
+#include "exaustao.h"
+#include "comb.h"
 
 /* Ordem lexicográfica especial: dá preferência a 
 * sequências mais longas... */
@@ -163,26 +165,25 @@ Subset *subset_sum(int *values, int n, int T)
 * 1,2,...,n que têm exatamente k termos. (Isso corresponde aos subconjuntos de
 * {1,2,...,n} que têm exatamente k elementos.) */
 
-/* utilizar exaustao para verificar se todos os vetores são
-* distintos */
-void combinar(int *v, int n, int k, int *c)
+/* PERMUTAÇÕES. Uma permutação da sequência 1,2,...,n é qualquer rearranjo 
+* desta sequência. Por exemplo, as seis permutações de (1,2,3) são (1,2,3),
+* (1,3,2), (2,1,3), (2,3,1), (3,1,2) e (3,2,1). Escreva uma função que imprima,
+* exatamente uma vez, cada uma das n! permutações de 1,2,...,n.*/
+
+/* v deve ser um vetor crescente */
+void arranjar(int *v, int n, int *c, vec2* v2xptr)
 {
-    if (k == 3)
+    print_vec(v, 0, n);
+    insert_vec2(v2xptr, v);
+    while(nextArrangement(v, n))
     {
-        while (k > 0)
-        {
-            swap(v,0,1); (*c)++; print_vec(v,0,n); 
-            swap(v,0,2); (*c)++; print_vec(v,0,n);
-            k--;
-        }
+        print_vec(v, 0, n);
+        (*c)++;
+
+        // verifica se a sequencia esta se repetindo
+        assert (verifica_sequencia(v, *v2xptr) == 0);
+        insert_vec2(v2xptr, v);
     }
-    if (k == 4){
-        for (int i = 0; i < 4; i++)
-        {
-            combinar(v, n, k-1, c);
-            swap(v, 0, 3);
-        }
-    }   
 }
 
 void endl() {printf("\n");}
@@ -208,11 +209,27 @@ int main(void)
     }
     endl();
 
-    printf("Combinacoes: \n");
-    int *sqt = sqt_vec(4, 1);
-    int c = 0;
-    combinar(sqt, 4, 4, &c);
-    printf("n comb: %d\n", c);
 
-    printf("fatorial de 4: %d", fatorial(4));
+
+    // 12.4.4
+    printf("Permutacoes: \n");
+    int N = 6;
+    int total_arranjos = fatorial(N);
+
+    int c = 1;
+    int *sqt = sqt_vec(N, 1);
+    vec2 v2x = init_vec2(total_arranjos, N);
+    arranjar(sqt, N, &c, &v2x);
+    printf("n arranjos: %d\n", c);
+
+    assert (c == total_arranjos);
+    printf("OK\n");
+
+
+    // depois colocamos em cima...
+    // 12.4.3
+    printf("Combinacoes: \n");
+    int *sequencia = sqt_vec(6, 1);
+    combinacoes(sequencia, 6, 3);
+    endl();
 }
