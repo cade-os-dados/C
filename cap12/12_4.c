@@ -164,6 +164,7 @@ Subset *subset_sum(int *values, int n, int T)
 /* 12.4.3 COMBINAÇÕES. Escreva uma função que imprima todas as subsequências de
 * 1,2,...,n que têm exatamente k termos. (Isso corresponde aos subconjuntos de
 * {1,2,...,n} que têm exatamente k elementos.) */
+/*R: cabecalho comb.h + asserts na funcao main*/
 
 /* PERMUTAÇÕES. Uma permutação da sequência 1,2,...,n é qualquer rearranjo 
 * desta sequência. Por exemplo, as seis permutações de (1,2,3) são (1,2,3),
@@ -209,7 +210,25 @@ int main(void)
     }
     endl();
 
+    // 12.4.3
 
+
+    printf("Combinacoes: \n");
+    int TAMANHO = 8;
+    int *seq = sqt_vec(TAMANHO, 1);
+    int K = 4;
+    int contador = 0;
+
+    // C(7,3) = 7! / 3! (7-3)! = 7*6*5*4! / 6 * 4! = 7*5 = 35
+    // C(8,3) = 8! / 3! (8-3)! = 8*7*6*5! / 6 * 5! = 56
+    // C(8,4) = 8! / 4! (8-4)! = 8*7*6*5 / 4! = 56*5/4 = 14*5 = 70
+    assert (ncombs(7,3) == 35);
+    assert (ncombs(8,3) == 56);
+    assert (ncombs(8,4) == 70);
+
+    combine(seq, TAMANHO, K, &contador);
+    assert (contador == ncombs(8,4));
+    endl();
 
     // 12.4.4
     printf("Permutacoes: \n");
@@ -225,11 +244,4 @@ int main(void)
     assert (c == total_arranjos);
     printf("OK\n");
 
-
-    // depois colocamos em cima...
-    // 12.4.3
-    printf("Combinacoes: \n");
-    int *sequencia = sqt_vec(6, 1);
-    combinacoes(sequencia, 6, 3);
-    endl();
 }
