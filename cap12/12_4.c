@@ -189,6 +189,35 @@ void arranjar(int *v, int n, int *c, vec2* v2xptr)
 
 void endl() {printf("\n");}
 
+/* 12.4.5 DESARRANJOS. Um desarranjo da sequência 1,2,...,n é qualquer permutação
+* desta sequência que muda todos os termos de posição. Em outras palavras, um desarranjo
+* de 1,2,...,n é qualquer permutação p1,p2,...,pn de 1,2,...,n tal que pi != i
+* para todo i. Por exemplo, os nove desarranjo de (1,2,3,4) são (2,1,4,3), (2,3,4,1),
+* (2,4,1,3), (3,1,4,2), (3,4,1,2), (3,4,2,1), (4,1,2,3), (4,3,1,2) e (4,3,2,1). Escreva
+* uma função que imprima, exatamente uma vez, cada desarranjo de 1,2,...,n */
+
+/* R: bom, vamos fazer um algoritmo bem lento, mas resolvemos rápido este problema... */
+int dessaranjo(int *v, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (v[i] == i+1) return 0;
+    }
+    return 1;
+}
+
+void desarranjos(int *v, int n, int* c)
+{
+    while(nextArrangement(v, n))
+    {
+        if (dessaranjo(v, n))
+        {
+            print_vec(v, 0, n);
+            (*c)++;
+        }
+    }
+}
+
 int main(void)
 {
     printf("Ordem militar\n");
@@ -211,8 +240,6 @@ int main(void)
     endl();
 
     // 12.4.3
-
-
     printf("Combinacoes: \n");
     int TAMANHO = 8;
     int *seq = sqt_vec(TAMANHO, 1);
@@ -240,8 +267,13 @@ int main(void)
     vec2 v2x = init_vec2(total_arranjos, N);
     arranjar(sqt, N, &c, &v2x);
     printf("n arranjos: %d\n", c);
-
     assert (c == total_arranjos);
-    printf("OK\n");
+    
 
+    // 12.4.5
+    int *seq2 = sqt_vec(4, 1);
+    int contador_desarranjo = 0;
+    desarranjos(seq2, 4, &contador_desarranjo);
+    assert(contador_desarranjo == 9);
+    printf("OK\n");
 }
