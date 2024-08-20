@@ -5,6 +5,7 @@
 #include "permutacao.h"
 #include "exaustao.h"
 #include "comb.h"
+#include "particoes.h"
 
 /* Ordem lexicográfica especial: dá preferência a 
 * sequências mais longas... */
@@ -218,6 +219,108 @@ void desarranjos(int *v, int n, int* c)
     }
 }
 
+/* 12.4.6 PARTIÇÕES. Escreva uma função que imprima uma lista de todas as partições
+* do conjunto {1,2,...,n} em m blocos não vazios. Uma tal partição pode ser
+* representada por um vetor p[1..n] com valores no conjunto {1,2,...,m} dotado
+* da seguinte propriedade: para cada i entre 1 e m, existe pelo menos um j tal
+* que p[j] = i. */
+
+/* https://stackoverflow.com/questions/400794/generating-the-partitions-of-a-number
+
+q = { 1: [[1]] }
+
+def decompose(n):
+    try:
+        return q[n]
+    except:
+        pass
+
+    result = [[n]]
+
+    for i in range(1, n):
+        a = n-i
+        R = decompose(i)
+        for r in R:
+            if r[0] <= a:
+                result.append([a] + r)
+
+    q[n] = result
+    return result
+*/
+
+/* descreve a quantidade de dados em cada subconjunto */
+SubconjuntoHead* tamanhoSubconjunto(int n)
+{ 
+    SubconjuntoHead* head = malloc(sizeof(SubconjuntoHead));
+    if (n == 3)
+    {
+        int size = sizeof(Subconjunto);
+        Subconjunto *p1, *p2, *p3;
+        p1 = malloc(size); p2 = malloc(size); p3 = malloc(size);
+        p1 -> v = malloc(sizeof(int)); p2 -> v = malloc(sizeof(int));
+        p3 -> v = malloc(sizeof(int));
+
+        p1 -> n = 1; p2 -> n = 2; p3 -> n = 3;
+        p1 -> v[0] = 3; 
+        p2 -> v[0] = 1;  p2 -> v[1] = 2;
+        p3 -> v[0] = 1; p3 -> v[1] = 1; p3 -> v[2] = 1;
+        
+        head -> next = p1;
+        p1 -> next = p2;
+        p2 -> next = p3;
+        p3 -> next = NULL;   
+    }
+    else if (n > 3){
+        for(int i = 1; i < n; i++)
+        {
+            int pivot = n - i;
+            SubconjuntoHead* r = tamanhoSubconjunto(i);
+            filterp0(r, pivot);
+            if (r != NULL)
+            {
+                pushp0(r, pivot); // adaptar
+                // podemos utilizar um vetor de ponteiros p/ particoes como cache...
+                head -> next = r;
+            }
+        }
+    }
+    return head;
+} 
+
+void particoes(int n)
+{
+
+}
+
+/*
+    {1,2,3}
+    {{1,2,3}} => 1
+    {{1},{2,3}}, {{2},{1,3}}, {{3},{1,2}} => 3
+    {{1},{2},{3}} => 1
+    soma = 5
+
+    {1,2,3,4}
+    {{1,2,3,4}}, => 1
+    {{1}, {2,3,4}}, {{2}, {1,3,4}}, {{3}, {1,2,4}}, {{4}, {1,2,3}}, => 4
+    {{1,2}, {3,4}}, {{1,3},{2,4}}, {{1,4}, {2,3}} => 3
+    {{1,2}, {3}, {4}}, {{1,3}, {2}, {4}}, {{1,4}, {2}, {3}} => 3
+    {{1},{2},{3},{4}} => 1
+    soma = 12
+
+    {1,2,3,4,5}
+    {{1,2,3,4,5}}, => 1
+    {{1},{2,3,4,5}}, {{2}, {1,3,4,5}}, {{3}, {1,2,4,5}}, {{4},{1,2,3,5}, {{5}, {1,2,3,4}}}, => 5
+    {{1,2}, {3,4,5}}, {{1,3}, {2,4,5}}, {{1,4}, {2,3,5}}, => 3
+    {{1,5}, {2,3,4}}, {{2,3}, {1,4,5}}, {{2,4},{1,3,5}}, => 3
+    {{2,5}, {1,3,4}}, {{3,4}, {1,2,5}}, {{3,5}, {1,2,4}}, {{4,5}, {1,2,3}} => 4
+    {{1,2,3}, {4}, {5}}, {{1,2,4}, {3}, {5}}, {{1,2,5}, {3}, {4}}, {{1,3,4}, {2}, {5}}, => 4
+    {{1,3,5}, {2}, {4}}, {{1,4,5}, {2}, {3}}, {{2,3,4}, {1}, {5}}, {{2,3,5}, {1}, {4}} => 4
+    {{2,4,5}, {1}, {3}}, {{3,4,5}, {1}, {2}} => 2
+    {{1}, {2}, {3}, {4}, {5}} => 1
+    soma = 27
+    ...
+*/
+
 int main(void)
 {
     printf("Ordem militar\n");
@@ -269,11 +372,33 @@ int main(void)
     printf("n arranjos: %d\n", c);
     assert (c == total_arranjos);
     
-
     // 12.4.5
     int *seq2 = sqt_vec(4, 1);
     int contador_desarranjo = 0;
     desarranjos(seq2, 4, &contador_desarranjo);
     assert(contador_desarranjo == 9);
     printf("OK\n");
+
+    // 12.4.6
+    SubconjuntoHead* head = tamanhoSubconjunto(3);
+    Subconjunto* ploop = head -> next;
+
+    while(ploop != NULL)
+    {
+        print_vec(ploop -> v, 0, ploop -> n);
+        ploop = ploop -> next;
+    }
+
+    Subconjunto* myteste = head -> next;
+    pushp0(myteste, 10);
+    assert((myteste -> v)[0] == 10);
+    assert((myteste -> v)[1] == 3);
+
+    filterp0(head, 2);
+    ploop = head -> next;
+    while(ploop != NULL)
+    {
+        print_vec(ploop -> v, 0, ploop -> n);
+        ploop = ploop -> next;
+    }
 }

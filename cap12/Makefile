@@ -19,7 +19,7 @@ OBJ = build/obj
 BUILDER = ar rv
 
 # ARQUIVOS .c
-FILES = vec lista busca fatorial permutacao exaustao comb
+FILES = vec lista busca fatorial permutacao exaustao comb particoes
 
 # ARQUIVOS FINAIS .EXE
 # (TEM QUE TER O ARQUIVO .C PARA COMPILAR)
@@ -29,7 +29,7 @@ all: compile library exe
 
 compile:
 	for file in $(FILES) ; do \
-		$(COMPILER) -c src/$$file.c $(I) -o $(OBJ)/$$file.o ; \
+		$(COMPILER) $(STD) -c src/$$file.c $(I) -o $(OBJ)/$$file.o ; \
 	done
 
 library:
