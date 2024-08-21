@@ -8,6 +8,7 @@
 #include "exaustao.h"
 #include "comb.h"
 #include "particoes.h"
+#include "bench.h"
 
 /* Ordem lexicográfica especial: dá preferência a 
 * sequências mais longas... */
@@ -398,8 +399,5 @@ int main(void)
     printf("\n");
     printsub(h3);
 
-    clock_t start_time = clock();
-    volatile SubconjuntoHead* hstress = tamanhoSubconjunto(25);
-    double elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
-    printf("Done in %f seconds\n", elapsed_time);
+    benchmark(tamanhoSubconjunto(25));
 }
