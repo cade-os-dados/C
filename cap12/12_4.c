@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include "vec.h"
 #include "lista.h"
 #include "busca.h"
@@ -248,29 +250,26 @@ def decompose(n):
     return result
 */
 
+void tamanhoSubconjunto3(SubconjuntoHead* head)
+{
+    int a1[1] = {3}; int a2[2] = {2,1}; int a3[3] = {1,1,1};
+    Subconjunto* p1 = from_array(a1,1);
+    Subconjunto* p2 = from_array(a2,2);
+    Subconjunto* p3 = from_array(a3,3);
+    head -> next = p1; p1 -> next = p2; 
+    p2 -> next = p3; p3 -> next = NULL;
+}
+
 /* descreve a quantidade de dados em cada subconjunto */
 SubconjuntoHead* tamanhoSubconjunto(int n)
-{ 
+{
     SubconjuntoHead* head = malloc(sizeof(SubconjuntoHead));
     if (n == 3)
-    {
-        int size = sizeof(Subconjunto);
-        Subconjunto *p1, *p2, *p3;
-        p1 = malloc(size); p2 = malloc(size); p3 = malloc(size);
-        p1 -> v = malloc(sizeof(int)); p2 -> v = malloc(sizeof(int));
-        p3 -> v = malloc(sizeof(int));
-
-        p1 -> n = 1; p2 -> n = 2; p3 -> n = 3;
-        p1 -> v[0] = 3; 
-        p2 -> v[0] = 1;  p2 -> v[1] = 2;
-        p3 -> v[0] = 1; p3 -> v[1] = 1; p3 -> v[2] = 1;
-        
-        head -> next = p1;
-        p1 -> next = p2;
-        p2 -> next = p3;
-        p3 -> next = NULL;   
-    }
-    else if (n > 3){
+        tamanhoSubconjunto3(head);
+    else {
+        Subconjunto* loop = from_array(&n, 1);
+        loop -> next = NULL;
+        head -> next = loop;
         for(int i = 1; i < n; i++)
         {
             int pivot = n - i;
@@ -278,9 +277,9 @@ SubconjuntoHead* tamanhoSubconjunto(int n)
             filterp0(r, pivot);
             if (r != NULL)
             {
-                pushp0(r, pivot); // adaptar
-                // podemos utilizar um vetor de ponteiros p/ particoes como cache...
-                head -> next = r;
+                pushp0all(r, pivot);
+                appendsub(loop, r);
+                loop = tailsub(loop);
             }
         }
     }
@@ -381,13 +380,7 @@ int main(void)
 
     // 12.4.6
     SubconjuntoHead* head = tamanhoSubconjunto(3);
-    Subconjunto* ploop = head -> next;
-
-    while(ploop != NULL)
-    {
-        print_vec(ploop -> v, 0, ploop -> n);
-        ploop = ploop -> next;
-    }
+    printsub(head);
 
     Subconjunto* myteste = head -> next;
     pushp0(myteste, 10);
@@ -395,10 +388,18 @@ int main(void)
     assert((myteste -> v)[1] == 3);
 
     filterp0(head, 2);
-    ploop = head -> next;
-    while(ploop != NULL)
-    {
-        print_vec(ploop -> v, 0, ploop -> n);
-        ploop = ploop -> next;
-    }
+    printsub(head);
+
+    SubconjuntoHead* h2 = tamanhoSubconjunto(4);
+    printf("\n");
+    printsub(h2);
+
+    SubconjuntoHead* h3 = tamanhoSubconjunto(5);
+    printf("\n");
+    printsub(h3);
+
+    clock_t start_time = clock();
+    volatile SubconjuntoHead* hstress = tamanhoSubconjunto(25);
+    double elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf("Done in %f seconds\n", elapsed_time);
 }
