@@ -8,11 +8,11 @@ OBJ = build/obj
 BUILDER = ar rv
 
 # ARQUIVOS .c
-FILES = vec lista busca fatorial permutacao exaustao comb particoes
+FILES = no pilha
 
 # ARQUIVOS FINAIS .EXE
 # (TEM QUE TER O ARQUIVO .C PARA COMPILAR)
-EXES = 14_2
+EXES = 14_2 14_3
 
 all: compile library exe
 
