@@ -20,11 +20,7 @@
     14.1.3 Sejam X e Z dois nós de uma árvore binária. Mostre que existe
     no máximo um caminho com origem X e término Z.
 
-    R: 
-    
-    (1) Se A é uma árvore binária, então para todo
-    
-    seja C1 e C2 caminhos distintos, (YC[0] = X, YC[1], YC[2], ..., YC[k] = Z)
+    R: seja C1 e C2 caminhos distintos, (YC[0] = X, YC[1], YC[2], ..., YC[k] = Z)
     e (YCC[0] = X, YCC[1], ..., YCC[i] = Z) suas respectivas sequências e
     Neste caso, YCC[i] = YC[k] = Z, portanto YCC[i-1] = YC[k-1] (2),
     YCC[i-2] = YC[i-2], ... YCC[0] = YC[0]
