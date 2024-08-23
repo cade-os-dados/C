@@ -19,3 +19,20 @@ void no_append_child_null(no node)
 {
     no_append(node, NULL, NULL);
 }
+
+void no_append_insere_compai(
+    noComPai a, noComPai b, noComPai c,
+    int v1, int v2
+){
+    a -> e = b;
+    a -> d = c;
+    if (b != NULL)
+        b -> valor = v1;
+    if (c != NULL)
+        c -> valor = v2;
+}
+
+void no_inserenull_compai(noComPai a)
+{
+    no_append_insere_compai(a, NULL, NULL, 0, 0);
+}

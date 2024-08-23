@@ -12,7 +12,7 @@ FILES = no pilha
 
 # ARQUIVOS FINAIS .EXE
 # (TEM QUE TER O ARQUIVO .C PARA COMPILAR)
-EXES = 14_2 14_3
+EXES = 14_2 14_3 14_4
 
 all: compile library exe
 

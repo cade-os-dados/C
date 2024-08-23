@@ -72,6 +72,10 @@ int is_avl(no r)
 
 int main(void)
 {  
+    /* 
+        Aqui eu joguei tudo para heap sem necessidade
+        igual quando estou trabalhando com lista ligada
+    */
     no t = malloc(sizeof(arvore));
     no_malloc_child(t);
     no_malloc_child(t -> e);
