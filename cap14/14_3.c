@@ -53,34 +53,21 @@ int alturai(no r)
 */
 
 /*
-    será que teria como calcular a altura das árvores passando
-    uma vez em cada nó?
+    R: não passa apenas 1 vez em cada nó mas ainda assim
+    é uma solução elegante!
 */
+
 int is_avl(no r)
 {
-
-    if (r -> e == NULL)
+    if(r == NULL) return 1;
+    if ((is_avl(r -> d)) & (is_avl(r -> e)))
     {
-        if (r -> d != NULL)
-        {
-            if ((r -> d -> e != NULL) | (r -> d -> d != NULL))
-                return 0;
-            else
-                is_avl(r -> d);
-        }
+        int he = altura(r -> e);
+        int hd = altura(r -> d);
+        if (abs(he-hd) <= 1)
+            return 1;
     }
-    if (r -> d == NULL)
-    {
-        if( r -> e != NULL)
-        {
-            if ((r -> e -> e != NULL) | (r -> e -> d != NULL))
-                return 0;
-            else
-                is_avl(r -> d);
-        }
-    }
-
-    return 1;
+    return 0;
 }
 
 int main(void)
@@ -106,7 +93,10 @@ int main(void)
     int h = altura(t);
     assert(h == 5);
     assert(h == alturai(t));
-    printf("OK\n");
     
-    printf("%d", is_avl(t));
+    assert(is_avl(t) == 0);
+    assert(is_avl(t->e->e->d) == 0);
+    assert(is_avl(t->e->e->d->e) == 1);
+
+    printf("OK\n");
 }
