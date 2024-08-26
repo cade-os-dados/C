@@ -53,63 +53,6 @@ int profundidade(noComPai a)
     e min-heap valor(pai) <= valor(no) p/ todo no
 */
 
-void print_arvore(noComPai arvore)
-{
-    if (arvore != NULL)
-    {
-        printf("%d ", arvore -> valor);
-        print_arvore(arvore -> e);
-        print_arvore(arvore -> d);
-    }
-}
-
-void print_no(noComPai arv)
-{
-    printf("{ ");
-    print_arvore(arv);
-    printf("}\n");
-}
-
-/* Transformar uma array em uma árvore binária */
-noComPai from_array(int v[], int n)
-{
-    int esquerda = 1; int idx = 0;
-    int t = sizeof(arvoreComPai);
-    noComPai arv = malloc(t);
-    noComPai loop = arv;
-
-    while(idx < n)
-    {
-        loop -> valor = v[idx];
-        if(esquerda)
-        {
-            loop -> e = malloc(t);
-            loop -> e -> pai = loop;
-            loop = loop -> e;
-            loop -> e = loop -> d = NULL;
-            esquerda = 0;
-        }
-        else
-        {
-            loop = loop -> pai;
-            loop -> d = malloc(t);
-            loop -> d -> pai = loop;
-            loop = loop -> d;
-            loop -> e = loop -> d = NULL;
-            esquerda = 1;
-        }
-        idx++;
-    }
-    if(esquerda)
-        loop -> pai -> d = NULL;
-    else
-        loop -> pai -> e = NULL;
-
-    arv -> pai = NULL;
-    free(loop);
-    return arv;
-}
-
 void to_heap(noComPai arv)
 {
     if (arv == NULL)
