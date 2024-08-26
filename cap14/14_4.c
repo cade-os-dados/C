@@ -140,11 +140,8 @@ int is_max_heap(noComPai arv)
 {
     if (arv == NULL)
         return 1;
-    if (arv -> pai != NULL)
-    {
-        if((arv -> pai -> valor) < arv -> valor)
-            return 0;
-    }
+    if(arv->pai != NULL && (arv->pai->valor) < arv->valor)
+        return 0;
     if (!is_max_heap(arv -> e))
         return 0;
     if(!is_max_heap(arv -> d))
