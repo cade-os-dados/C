@@ -36,3 +36,10 @@ void no_inserenull_compai(noComPai a)
 {
     no_append_insere_compai(a, NULL, NULL, 0, 0);
 }
+
+void no_swap(noComPai no1, noComPai no2)
+{
+    int valor = no1 -> valor;
+    no1 -> valor = no2 -> valor;
+    no2 -> valor = valor;
+}

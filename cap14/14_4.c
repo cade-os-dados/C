@@ -71,7 +71,7 @@ void print_no(noComPai arv)
 }
 
 /* Transformar uma array em uma árvore binária */
-noComPai from_array2(int v[], int n)
+noComPai from_array(int v[], int n)
 {
     int esquerda = 1; int idx = 0;
     int t = sizeof(arvoreComPai);
@@ -105,6 +105,7 @@ noComPai from_array2(int v[], int n)
     else
         loop -> pai -> e = NULL;
 
+    arv -> pai = NULL;
     free(loop);
     return arv;
 }
@@ -139,8 +140,11 @@ int is_max_heap(noComPai arv)
 {
     if (arv == NULL)
         return 1;
-    if ((arv -> pai -> valor) < arv -> valor)
-        return 0;
+    if (arv -> pai != NULL)
+    {
+        if((arv -> pai -> valor) < arv -> valor)
+            return 0;
+    }
     if (!is_max_heap(arv -> e))
         return 0;
     if(!is_max_heap(arv -> d))
@@ -148,13 +152,46 @@ int is_max_heap(noComPai arv)
     return 1;
 }
 
-void InsereEmHeap(int m, int v[])
+int is_almost_max_heap(noComPai arv)
 {
-    int f = m+1;
-    while (f > 1 && v[f/2] < v[f]){
-        int t = v[f/2]; v[f/2] = v[f]; v[f] = t;
-        f = f/2;
-    }
+    if(!is_max_heap(arv -> e -> e))
+        return 0;
+    if(!is_max_heap(arv -> e -> d))
+        return 0;
+    if(!is_max_heap(arv -> d -> e))
+        return 0;
+    if(!is_max_heap(arv -> d -> d))
+        return 0;
+    return 1;
+}
+
+/* 
+    Input: arv -> e != NULL & arv -> d != NULL
+    Result: 1 -> d, 0 -> e
+
+*/
+int no_cmp(noComPai arv)
+{
+    if ((arv -> d -> valor) > (arv -> e -> valor))
+        return 1;
+    return 0;
+}
+
+void SacodeHeapTree(noComPai arv)
+{
+    /*break condition*/
+    if ((arv -> e == NULL) & (arv -> d == NULL))
+        return;
+
+    noComPai child;
+
+    if ((arv -> e == NULL) | (no_cmp(arv)))
+        child = arv -> d;
+    else 
+        child = arv -> e;
+
+    no_swap(arv, child);
+    SacodeHeapTree(child);       
 }
 
 void SacodeHeap(int m, int v[])
@@ -191,12 +228,20 @@ int main(void)
     assert(profundidade(&n2) == 1);
     assert(profundidade(&r) == 0);
 
-    int array2[6] = {4,10,3,5,1,12};
+    
+    int array[6] = {4,10,3,5,1,12};
+    int array2[6] = {4,12,10,5,3,1};
 
-    noComPai arv2 = from_array2(array2, 6);
-    to_heap(arv2);
+    noComPai arv = from_array(array, 6);
+    to_heap(arv); // transforma em heap
+    assert(is_max_heap(arv));
 
-    assert(is_max_heap(arv2) == 1);
+    noComPai arv2 = from_array(array2, 6);
+    assert(!is_max_heap(arv2));
+    assert(is_almost_max_heap(arv2));
+    
+    SacodeHeapTree(arv2);
+    assert(is_max_heap(arv2));
 
     printf("OK");
 

@@ -25,3 +25,4 @@ void no_malloc_child(no node);
 void no_append_child_null(no node);
 void no_append_insere_compai(noComPai a, noComPai b, noComPai c,int v1, int v2);
 void no_inserenull_compai(noComPai a);
+void no_swap(noComPai no1, noComPai no2);
