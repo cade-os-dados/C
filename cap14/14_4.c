@@ -194,18 +194,6 @@ void SacodeHeapTree(noComPai arv)
     SacodeHeapTree(child);       
 }
 
-void SacodeHeap(int m, int v[])
-{
-    int t,f = 2;
-    while(f <= m)
-    {
-        if (f < m && v[f] < v[f+1]) ++f;
-        if(v[f/2] >= v[f]) break;
-        t = v[f/2]; v[f/2] = v[f]; v[f] = t;
-        f *= 2;
-    }
-}
-
 int main(void)
 {
     arvoreComPai r, n1, n2, n3, n4, n5, n6;
