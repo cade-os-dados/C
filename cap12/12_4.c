@@ -287,9 +287,79 @@ SubconjuntoHead* tamanhoSubconjunto(int n)
     return head;
 } 
 
+void print_subconjunto(int* v, int i, int f)
+{
+    printf("{ ");
+    while(i < f)
+    {
+        printf("%d ", v[i]);
+        i++;
+    }
+    printf("}");
+}
+
+typedef struct vecPointer
+{
+    int* ptr;
+    int len;
+} vptr;
+
+void swapVecs(int* ptr1, int* ptr2)
+{
+    int t = *ptr1;
+    *ptr1 = *ptr2;
+    *ptr2 = t;
+}
+
+void print_permutacoes_subconjuntos(int* v, Subconjunto* sub, int n)
+{
+    int vcopy[n];
+    for(int i = 0; i<n;i++)
+        vcopy[i] = v[i];
+
+    vptr array_slices[sub->n];
+    
+    int index=0;
+    array_slices[0].ptr = vcopy;
+    for(int i = 0; i < sub -> n; i++)
+    {
+        array_slices[i].len = (sub->v)[i];
+        index += (sub->v)[i];
+        if(index == n) break;
+        array_slices[i+1].ptr = vcopy+index;
+    }
+
+    print_subconjunto(array_slices[0].ptr, 0, array_slices[0].len);
+    print_subconjunto(array_slices[1].ptr, 0, array_slices[1].len);
+
+    printf("\n");
+
+    swapVecs(array_slices[0].ptr, array_slices[1].ptr);
+    print_subconjunto(array_slices[0].ptr, 0, array_slices[0].len);
+    print_subconjunto(array_slices[1].ptr, 0, array_slices[1].len);
+
+    printf("\n");
+}
+
 void particoes(int n)
 {
+    int* seq = sqt_vec(n,1);
+    SubconjuntoHead* head = tamanhoSubconjunto(n);
+    Subconjunto* tamanho = head -> next;
 
+    while(tamanho != NULL)
+    {
+        int ini = 0, f = 0;
+        for(int i = 0; i < tamanho -> n; i++)
+        {
+            f += (tamanho -> v)[i];
+            print_subconjunto(seq, ini, f);
+            ini = f;
+        }
+        printf("\n");
+        tamanho = tamanho -> next;
+    }
+    print_permutacoes_subconjuntos(seq,head->next->next,n);
 }
 
 /*
@@ -400,4 +470,6 @@ int main(void)
     printsub(h3);
 
     benchmark(tamanhoSubconjunto(25));
+
+    particoes(4);
 }
