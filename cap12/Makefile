@@ -23,7 +23,7 @@ FILES = vec lista busca fatorial permutacao exaustao comb particoes
 
 # ARQUIVOS FINAIS .EXE
 # (TEM QUE TER O ARQUIVO .C PARA COMPILAR)
-EXES = 12_2 12_3 12_4
+EXES = 12_2 12_3 12_4 12_4_6
 
 all: compile library exe
 
