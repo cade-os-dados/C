@@ -4,7 +4,7 @@
 typedef unsigned char* palavra;
 typedef unsigned char* texto;
 
-#define MAX 200
+#define MAX 35
 
 /*
     Recebe uma palavra a[1..m] com 1 <= m <= MAX e um texto
@@ -17,8 +17,10 @@ int BoyerMoore2 (palavra a, int m, texto b, int n)
     for(i=m;i>=1;i--){
         j=m-1;r=0;
         while(m-r >= i && i-r>=1)
+        {
             if(a[m-r] == a[j-r]) r+= 1;
             else j-=1, r=0;
+        }
         T2[i] = m-j;
     }
     ocorrs=0;k=m;
@@ -32,16 +34,29 @@ int BoyerMoore2 (palavra a, int m, texto b, int n)
     return ocorrs;
 }
 
+/* 
+    13.4.1 Calcule a tabela T2 no caso em que a[1] = a[2] = ... = a[m].
+    Calcule a tabela T2 no caso em que os elementos de a[1..m] são distintos
+    dois a dois.
+*/
+
+
+
+
+
 int main(void)
 {
-    palavra p = "gato";
-    texto t = "Quem nao tem cao caca com gato";
+    palavra p = (palavra)"gato";
+    texto t = (texto)"Quem nao tem cao caca com gato";
     int total = BoyerMoore2(p, 4, t, 31);
     assert(total == 1);
 
     /*13.3.2*/
-    texto t2 = "MatoRatoPatoatogato";
+    texto t2 = (texto)"MatoRatoPatoatogato";
     assert(BoyerMoore2(p,4,t2,20) == 1);
+
+    palavra p2 = (palavra)"aaaa";
+    BoyerMoore2(p2, 4, t, 31);
 
     printf("OK");
 }

@@ -55,13 +55,13 @@ int BoyerMooreSentinela (palavra a, int m, texto b, int n)
 
 int main(void)
 {
-    palavra p = "gato";
-    texto t = "Quem nao tem cao caca com gato";
+    palavra p = (palavra)"gato";
+    texto t = (texto)"Quem nao tem cao caca com gato";
     int total = BoyerMoore1(p, 4, t, 31);
     assert(total == 1);
 
     /*13.3.2*/
-    texto t2 = "MatoRatoPatoatogato";
+    texto t2 = (texto)"MatoRatoPatoatogato";
     assert(BoyerMoore1(p,4,t2,20) == 1);
 
     /*13.3.3*/

@@ -30,8 +30,8 @@ int trivial(palavra a, int m, texto b, int n)
 
 int main(void)
 {
-    palavra p = "gato";
-    texto t = "Quem nao tem cao caca com gato";
+    palavra p = (palavra)"gato";
+    texto t = (texto)"Quem nao tem cao caca com gato";
     int total = trivial(p, 4, t, 31);
     assert(total == 1);
 
@@ -40,7 +40,7 @@ int main(void)
         pois faz todas as comparacoes sempre que
         a palavra termina em ato 
     */
-    texto t2 = "MatoRatoPatoatogato";
+    texto t2 = (texto)"MatoRatoPatoatogato";
     assert(trivial(p,4,t2,20) == 1);
 
     printf("OK");
