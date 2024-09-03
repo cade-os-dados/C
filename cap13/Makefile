@@ -1,5 +1,5 @@
 OPTIONS = -Wall -Wpedantic -Wno-unused-result -O0 -g
-FILES = 13_2 13_3 13_4
+FILES = 13_2 13_3 13_4 13_5
 
 all: exe
 
