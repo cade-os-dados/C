@@ -47,6 +47,17 @@ int is_busca(arvore r)
 }
 /* 15.1 END */
 
+/* 15.2 BEGIN */
+int count(arvore r)
+{
+    if(r==NULL) return 0;
+    int i = 1;
+    i+=count(r->e);
+    i+=count(r->d);
+    return i;
+}
+/* 15.2 END */
+
 /*
     Recebe uma árvore não vazia r, remove a raiz da árvore
     e rearranja a árvore de modo que ela continue sendo
@@ -102,9 +113,65 @@ arvore RemoveRaiz(arvore r, int is_heap)
 /*
     13.4.3 Escreva uma função recursiva da função RemoveRaiz.
 */
-arvore RemoveRaizR(arvore r)
-{
+
+/* 
+    o que faz o algoritmo? 
+    se r->e for nulo retorna r->d e apaga r
+    se r->e nao for nulo, toma q = max(r->e)
+    e p = pai(max(r->e))
+    se r->e->d != NULL entao troca
+    p->d = q->e e q->e = r->e
+
+    no final q->d = r->d
+
+    3 casos então
+    1. se r->e NULL retorna r->d / free(r)
+    portanto, a nova raiz é r->d
+    2. se r->e!=NULL e r->e->d NULL então r->e->d = r->e / free(e)
+    portanto, a nova raiz é r->e
+    3. mais fácil ilustrar com o diagrama abaixo
+
+    (antes)
+                7
+            2e       8d
+        1e       4d
+            3e       6d
+                 5e
     
+    (depois)
+                6
+            2e      8d
+        1e       4d
+             3e       5d
+*/
+
+/* 
+    lembrando que aqui não dou free
+    porque estou supondo que r está na stack
+ */
+arvore RemoveRaizR(arvore r, arvore i)
+{
+    if(r==i)
+    {
+        if(r->e==NULL) return r->d;
+        if(r->e->d==NULL)
+        {
+            r->e->d = r->d;
+            return r->e;
+        }
+        arvore pq[2]; // p = pq[0], q = pq[1]
+        pq[0] = RemoveRaizR(r,i->e);
+        pq[1] = pq[0]->d;
+        pq[0]->d = pq[1]->e;
+        pq[1]->e = r->e;
+        pq[1]->d = r->d;
+        return pq[1];
+    }
+
+    if(i->d->d==NULL) 
+        return i;
+    else 
+        return RemoveRaizR(r,i->d);
 }
 
 int main(void)
@@ -125,10 +192,17 @@ int main(void)
     fillno(&a11,36,NULL,NULL);
 
     assert(is_busca(&a));
+    assert(count(&a) == 12);
 
     a.e=RemoveRaiz(a.e, 0);
     assert(is_busca(&a)); 
+    assert(count(&a) == 11);
     /* 15.4.1 END */
 
+    // 15.4.3
+    a.e=RemoveRaizR(a.e, a.e);
+    assert(is_busca(&a));
+    assert(count(&a) == 10);
 
+    printf("DETONADO!!!");
 }
