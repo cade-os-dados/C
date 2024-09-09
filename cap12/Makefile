@@ -5,7 +5,7 @@ STD = -std=c99
 COMPILER = gcc
 
 # STATIC LINK LIBRARY
-LIB = build/lib/genericlib.a
+LIB = build/lib/genericlib.a build/lib/cset99.a
 
 # FLAG ARQUIVOS DE INCLUSÃO
 I = -Iinclude
@@ -17,6 +17,7 @@ OPTIMIZED = -Wall -Wpedantic -Wno-unused-result -Ofast -g
 # BUILD DA STATIC LIBRARY
 OBJ = build/obj
 BUILDER = ar rv
+BUILD = build/lib/genericlib.a
 
 # ARQUIVOS .c
 FILES = vec lista busca fatorial permutacao exaustao comb particoes
@@ -34,10 +35,10 @@ compile:
 
 library:
 	for file in $(FILES); do \
-		$(BUILDER) $(LIB) $(OBJ)/$$file.o ; \
+		$(BUILDER) $(BUILD) $(OBJ)/$$file.o ; \
 	done
 
 exe:
 	for e in $(EXES) ; do \
-		$(COMPILER) $(STD) $(OPTIONS) $$e.c $(LIB) $(I) -o build/$$e.exe ; \
+		$(COMPILER) $(STD) $(OPTIMIZED) $$e.c $(LIB) $(I) -o build/$$e.exe ; \
 	done

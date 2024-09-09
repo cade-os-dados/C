@@ -1,6 +1,11 @@
 #include "vec.h"
 #include "particoes.h"
+#include "permutacao.h"
 #include "bench.h"
+
+/* generate bin https://github.com/cade-os-dados/cset99*/
+#include "cset99/set.h"
+#include "cset99/safearray.h"
 
 typedef struct vecPointer
 {
@@ -29,6 +34,51 @@ void swapVecs(int* ptr1, int* ptr2)
     int t = *ptr1;
     *ptr1 = *ptr2;
     *ptr2 = t;
+}
+
+void print_slices(safeArrayPtr array_slices, int n)
+{
+    for(int i = 0; i < n;i++)
+    {
+        print_subconjunto(array_slices[i].array, 0, array_slices[i].n);
+    }
+}
+
+safeArrayPtr make_slices(int* vetor, int* t, Subconjunto* sub, int n)
+{
+    safeArrayPtr array_slices = malloc(sizeof(safeArray)*(sub->n));
+
+    
+    /* Cria array slices, armazenando ponteiro e a length*/
+    copy_vec(vetor, t, n);
+
+    int index=0;
+    array_slices[0].array = t;
+    for(int i = 0; i < sub -> n; i++)
+    {
+        array_slices[i].n = (sub->v)[i];
+        index += (sub->v)[i];
+        if(index == n) break;
+        array_slices[i+1].array = t+index;
+    }
+    return array_slices;
+}
+
+safeArrayPtr join_slices(safeArray slices[], int k, int n)
+{
+    safeArrayPtr r = malloc(sizeof(safeArray));
+    r->array = malloc(sizeof(int)*n);
+    r->n = n; int m = 0;
+    for(int i = 0; i < k; i++)
+    {
+        safeArray t = slices[i];
+        for(int j = 0; j < t.n; j++)
+        {
+            (r->array)[m] = t.array[j];
+            m++;
+        }
+    }
+    return r;
 }
 
 /* 12.4.6 PARTIÇÕES. Escreva uma função que imprima uma lista de todas as partições
@@ -96,19 +146,6 @@ SubconjuntoHead* tamanhoSubconjunto(int n)
     return head;
 } 
 
-/*
-    {1 2 3} { 4 } -> 4
-    {1 2} {3 4} -> 1 
-    {1 3} {2 4} -> 1
-    {1 4} {2 3} -> 1
-    {1 2} {3} {4} -> 1
-    {1 3} {2} {4} -> 1
-    {1 4} {2} {3} -> 1
-    {2 3} {1} {4} -> 1
-    {2 4} {1} {3} -> 1
-    {3 4} {1} {2} -> 1
-*/
-
 void print_permutacoes_subconjuntos(int* v, Subconjunto* sub, int n)
 {
     if(sub->n == 1)
@@ -124,58 +161,30 @@ void print_permutacoes_subconjuntos(int* v, Subconjunto* sub, int n)
     {
         /* Vetor copia para nao afetar o vetor original*/
         int* vcopy = sqt_vec(n,1);
+        int t[n];
 
-        vptr array_slices[sub->n];
-        
         /* Cria array slices, armazenando ponteiro e a length*/
-        int index=0;
-        array_slices[0].ptr = vcopy;
-        for(int i = 0; i < sub -> n; i++)
+        safeArrayPtr array_slices = make_slices(vcopy, t, sub, n);
+        safeqsortElements(array_slices, sub->n);
+        safeqsort(array_slices, 0, sub->n - 1);
+        
+        safeArrayPtr arr = join_slices(array_slices, sub->n, n);
+        set mset = begin(*arr);
+
+        while(nextArrangement(vcopy, n))
         {
-            array_slices[i].len = (sub->v)[i];
-            index += (sub->v)[i];
-            if(index == n) break;
-            array_slices[i+1].ptr = vcopy+index;
+            copy_vec(vcopy, t, n);
+            safeqsortElements(array_slices, sub->n);
+            safeqsort(array_slices, 0, sub->n - 1);
+            arr = join_slices(array_slices, sub->n, n);
+            if(search(mset, *arr) == NULL)
+            {
+                print_slices(array_slices, sub->n);
+                printf("\n");
+                insert(mset, *arr);
+            }
         }
-
-        /*
-            1. calcular quantidade de permutacoes
-            2. calcular a ordem das permutacoes
-            3. printar todas as permutacoes
-        */
-
-        /*
-            Alternativa (brute force): criar um set, rearranjar o vetor
-            em ordem lexicográfica e validar se a nova combinação
-            já foi anteriormente printada
-            para o algoritmo de equalizacao precisaremos ordenar
-            os subconjuntos, do que tem maior numero de elementos
-            para o que tem menor numero de elementos e cada
-            subconjunto deve ter seus elementos ordenados
-            internamente, assim conseguimos comparar particoes
-        */
-
-        for(int i = 0; i < sub->n;i++)
-        {
-            print_subconjunto(
-                array_slices[i].ptr, // vec
-                0, //idx i
-                array_slices[i].len //idx f
-            );   
-        }
-        printf("\n");
-
-        swapVecs(array_slices[0].ptr, array_slices[1].ptr);
-        for(int i = 0; i < sub->n;i++)
-        {
-            print_subconjunto(
-                array_slices[i].ptr, // vec
-                0, //idx i
-                array_slices[i].len //idx f
-            );
-        }
-        printf("\n");
-
+        free(array_slices);
         free(vcopy);
     }
 }
@@ -192,35 +201,6 @@ void particoes(int n)
         tamanho = tamanho -> next;
     }
 }
-
-/*
-    {1,2,3}
-    {{1,2,3}} => 1
-    {{1},{2,3}}, {{2},{1,3}}, {{3},{1,2}} => 3
-    {{1},{2},{3}} => 1
-    soma = 5
-
-    {1,2,3,4}
-    {{1,2,3,4}}, => 1
-    {{1}, {2,3,4}}, {{2}, {1,3,4}}, {{3}, {1,2,4}}, {{4}, {1,2,3}}, => 4
-    {{1,2}, {3,4}}, {{1,3},{2,4}}, {{1,4}, {2,3}} => 3
-    {{1,2}, {3}, {4}}, {{1,3}, {2}, {4}}, {{1,4}, {2}, {3}} => 3
-    {{1},{2},{3},{4}} => 1
-    soma = 12
-
-    {1,2,3,4,5}
-    {{1,2,3,4,5}}, => 1
-    {{1},{2,3,4,5}}, {{2}, {1,3,4,5}}, {{3}, {1,2,4,5}}, {{4},{1,2,3,5}, {{5}, {1,2,3,4}}}, => 5
-    {{1,2}, {3,4,5}}, {{1,3}, {2,4,5}}, {{1,4}, {2,3,5}}, => 3
-    {{1,5}, {2,3,4}}, {{2,3}, {1,4,5}}, {{2,4},{1,3,5}}, => 3
-    {{2,5}, {1,3,4}}, {{3,4}, {1,2,5}}, {{3,5}, {1,2,4}}, {{4,5}, {1,2,3}} => 4
-    {{1,2,3}, {4}, {5}}, {{1,2,4}, {3}, {5}}, {{1,2,5}, {3}, {4}}, {{1,3,4}, {2}, {5}}, => 4
-    {{1,3,5}, {2}, {4}}, {{1,4,5}, {2}, {3}}, {{2,3,4}, {1}, {5}}, {{2,3,5}, {1}, {4}} => 4
-    {{2,4,5}, {1}, {3}}, {{3,4,5}, {1}, {2}} => 2
-    {{1}, {2}, {3}, {4}, {5}} => 1
-    soma = 27
-    ...
-*/
 
 int main(void)
 {
@@ -247,4 +227,5 @@ int main(void)
     benchmark(tamanhoSubconjunto(25));
 
     particoes(4);
+    benchmark(particoes(8));
 }
